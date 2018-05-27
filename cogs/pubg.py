@@ -106,7 +106,11 @@ class PUBG:
     async def _update(self, user):
         s = requests.Session()
 
-        url = f"https://dak.gg/profile/{self._data[user]['account']}"
+        try:
+            url = f"https://dak.gg/profile/{self._data[user]['account']}"
+        except KeyError:
+            await self.bot.say("```Esse usuário ainda não está registrado```")
+            return 1
         r = s.get(url)
         renew_url = url + "/renew"
 
