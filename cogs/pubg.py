@@ -109,8 +109,11 @@ class PUBG:
         try:
             url = f"https://dak.gg/profile/{self._data[user]['account']}"
         except KeyError:
-            await self.bot.say("```Esse usuário ainda não está registrado```")
+            message = await self.bot.say("```Esse usuário ainda não está registrado```")
+            await asyncio.sleep(10)
+            await self.bot.delete_message(message)
             return 1
+        
         r = s.get(url)
         renew_url = url + "/renew"
 
