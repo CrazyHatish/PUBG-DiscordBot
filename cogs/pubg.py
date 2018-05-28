@@ -113,7 +113,7 @@ class PUBG:
             await asyncio.sleep(10)
             await self.bot.delete_message(message)
             return 1
-        
+
         r = s.get(url)
         renew_url = url + "/renew"
 
@@ -206,7 +206,7 @@ class PUBG:
         await self._removeroles(author)
         if await self._update(author.id):
             return
-        await self._set_roles(ctx, author.id)
+        await self._set_roles(ctx, author)
 
     @commands.command(pass_context=True, no_pm=True)
     async def update(self, ctx):
@@ -231,7 +231,8 @@ class PUBG:
                         value='Por exemplo, se seu nick no PUBG for xXJoseGamePlaysXx escreva "p!register'
                               ' xXJoseGamePlaysXx" no chat abaixo (sem as aspas).',
                         inline=False)
-        embed.add_field(name='Utilize o comando "p!rank" para ver suas estatísticas, e "p!update" para atualizar seu cargo',
+        embed.add_field(name='Utilize o comando "p!rank" para ver suas estatísticas, '
+                             'e "p!update" para atualizar seu cargo',
                         value='Você também pode usar o comando "p!rank @[usuário]" para ver o rank de outro usuário no'
                               ' server.',
                         inline=False)
