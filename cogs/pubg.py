@@ -125,7 +125,7 @@ class PUBG:
             "X-Requested-With": "XMLHttpRequest",
         }
 
-        regions = ["na", "eu", "as", "jp", "oc", "sa", "sea", "krjp"]
+        regions = ["na", "sa"]
 
         for region in regions:
             _ = s.post(renew_url, headers=headers, data={"region": region})
