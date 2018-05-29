@@ -200,8 +200,10 @@ class PUBG:
     @commands.command(pass_context=True, no_pm=True)
     async def register(self, ctx, account):
         """Registers a PUBG account to Discord user"""
-        await self.bot.delete_message(ctx.message)
         author = ctx.message.author
+        message = await self.bot.say(f"`Registrando conta {account} ao usuário {author.name}`")
+
+        await self.bot.delete_message(ctx.message)
         self._data.update({author.id: {"account": account}})
         self._save_data()
 
@@ -209,6 +211,8 @@ class PUBG:
         if await self._update(author.id):
             return
         await self._set_roles(ctx, author)
+
+        await self.bot.delete_message(message)
 
     @commands.command(pass_context=True, no_pm=True)
     async def update(self, ctx):
