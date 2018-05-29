@@ -119,14 +119,16 @@ class PUBG:
 
         soup = BeautifulSoup(r.content, 'lxml')
         token = soup.find("meta", {"name": "csrf-token"})
-        region = soup.find("li", class_="active").find("a")["href"][-3:].strip("/")
 
         headers = {
             "X-CSRF-TOKEN": token["content"],
             "X-Requested-With": "XMLHttpRequest",
         }
 
-        _ = s.post(renew_url, headers=headers, data={"region": region})
+        regions = ["na", "eu", "as", "jp", "oc", "sa", "sea", "krjp"]
+
+        for region in regions:
+            _ = s.post(renew_url, headers=headers, data={"region": region})
 
         r = s.get(url)
 
