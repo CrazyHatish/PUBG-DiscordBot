@@ -103,7 +103,7 @@ class PUBG:
             if role.name in self._settable_roles:
                 await self.bot.remove_roles(user, role)
 
-    async def _update(self, user):
+    async def _update(self, user, regions=None):
         s = requests.Session()
 
         try:
@@ -125,7 +125,10 @@ class PUBG:
             "X-Requested-With": "XMLHttpRequest",
         }
 
-        regions = ["na", "sa"]
+        if regions is None:
+            regions = [soup.find("li", class_="active").find("a")["href"][-3:].strip("/")]
+            if regions == ["rjp"]:
+                regions = ["krjp"]
 
         for region in regions:
             _ = s.post(renew_url, headers=headers, data={"region": region})
@@ -133,8 +136,8 @@ class PUBG:
         r = s.get(url)
 
         soup = BeautifulSoup(r.content, 'lxml')
-        stats_list = ["rating", "kd", "winratio", "top10s", "deals", "games",
-                      "mostkills", "headshots", "longest", "survival"]
+        stats_list = ("rating", "kd", "winratio", "top10s", "deals", "games",
+                      "mostkills", "headshots", "longest", "survival")
         modes = {mode: {"tpp": dict.fromkeys(stats_list), "fpp": dict.fromkeys(stats_list)}
                  for mode in ["squad", "solo", "duo"]}
 
@@ -198,8 +201,9 @@ class PUBG:
         await self.bot.say(embed=embed)
 
     @commands.command(pass_context=True, no_pm=True)
-    async def register(self, ctx, account):
+    async def register(self, ctx, account, region=None):
         """Registers a PUBG account to Discord user"""
+        region = ["na", "sa"] if region is None else [region.lower()]
         author = ctx.message.author
         message = await self.bot.say(f"`Registrando conta {account} ao usuário {author.name}`")
 
@@ -208,7 +212,7 @@ class PUBG:
         self._save_data()
 
         await self._removeroles(author)
-        if await self._update(author.id):
+        if await self._update(author.id, region):
             return
         await self._set_roles(ctx, author)
 
@@ -233,9 +237,12 @@ class PUBG:
                               description="Por favor registre sua conta no PUBG seguindo as instruções abaixo para"
                                           "participar de nosso ranking!",
                               color=0x000080)
-        embed.add_field(name='Utilize o comando "p!register [seu nick]" para receber seu cargo',
-                        value='Por exemplo, se seu nick no PUBG for xXJoseGamePlaysXx escreva "p!register'
-                              ' xXJoseGamePlaysXx" no chat abaixo (sem as aspas).',
+        embed.add_field(name='Utilize o comando "p!register [seu nick] [server]" para receber seu cargo',
+                        value='Por exemplo, se seu nick no PUBG for xXJoseGamePlaysXx e você jogar principalmente '
+                              'no servidor da América do Sul escreva "p!register xXJoseGamePlaysXx sa" no chat abaixo '
+                              '(sem as aspas).\n'
+                              'Regiões disponíveis: sa (América do Sul), na (América do Norte), eu (Europa), as (Asia),'
+                              ' krjp (Coréia), jp (Japão), oc (Oceania), sea (Sudeste da Ásia) e ru (Rússia)',
                         inline=False)
         embed.add_field(name='Utilize o comando "p!rank" para ver suas estatísticas, '
                              'e "p!update" para atualizar seu cargo',
