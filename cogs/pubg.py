@@ -68,7 +68,7 @@ class PUBG:
             return
 
         await self.bot.add_roles(user, role)
-        message = await self.bot.say('```Cargo {} adicionado a {}```'.format(role.name, user.name))
+        message = await self.bot.say('`Cargo {} adicionado a {}`'.format(role.name, user.name))
         await asyncio.sleep(2)
         await self.bot.delete_message(message)
 
@@ -109,7 +109,7 @@ class PUBG:
         try:
             url = f"https://dak.gg/profile/{self._data[user]['account']}"
         except KeyError:
-            message = await self.bot.say("```Esse usuário ainda não está registrado```")
+            message = await self.bot.say("`Esse usuário ainda não está registrado`")
             await asyncio.sleep(10)
             await self.bot.delete_message(message)
             return 1
@@ -259,7 +259,7 @@ class PUBG:
         try:
             await self._show_stats(user, ctx)
         except KeyError:
-            await self.bot.say("```Esse usuário ainda não está registrado```")
+            await self.bot.say("`Esse usuário ainda não está registrado`")
 
     @commands.command(pass_context=True)
     @checks.admin()
