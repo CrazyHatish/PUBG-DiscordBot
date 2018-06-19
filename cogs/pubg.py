@@ -294,25 +294,18 @@ class PUBG:
             await asyncio.sleep(1)
 
 
-def check_files():
-    if not os.path.exists('data/pubg/settings.json'):
+def check_files(file):
+    if not os.path.exists(f"data/pubg/{file}"):
         try:
-            os.mkdir('data/pubg')
+            os.mkdir("data/pubg")
         except FileExistsError:
             pass
-        else:
-            dataIO.save_json('data/pubg/settings.json', {})
-
-    if not os.path.exists('data/pubg/data.json'):
-        try:
-            os.mkdir('data/pubg')
-        except FileExistsError:
-            pass
-        else:
-            dataIO.save_json('data/pubg/data.json', {})
+        finally:
+            dataIO.save_json(f"data/pubg/{file}", {})
 
 
 def setup(bot):
-    check_files()
+    for file in ["settings.json", "data.json"]:
+        check_files(file)
     n = PUBG(bot)
     bot.add_cog(n)
